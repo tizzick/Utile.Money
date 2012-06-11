@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Useful.Money", "Useful.Money\Useful.Money.csproj", "{AB413157-8485-446B-8A5B-1E57290E4B0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{6951F5D0-2BB2-4850-8B3A-CB814D8001CD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5735DBDD-04FE-407B-A0DA-3B346B523523}"
+	ProjectSection(SolutionItems) = preProject
+		Useful.Money.vsmdi = Useful.Money.vsmdi
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Useful.Money.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB413157-8485-446B-8A5B-1E57290E4B0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB413157-8485-446B-8A5B-1E57290E4B0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB413157-8485-446B-8A5B-1E57290E4B0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB413157-8485-446B-8A5B-1E57290E4B0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6951F5D0-2BB2-4850-8B3A-CB814D8001CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6951F5D0-2BB2-4850-8B3A-CB814D8001CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6951F5D0-2BB2-4850-8B3A-CB814D8001CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6951F5D0-2BB2-4850-8B3A-CB814D8001CD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
