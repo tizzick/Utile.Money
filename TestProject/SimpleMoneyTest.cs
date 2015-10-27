@@ -27,13 +27,20 @@ namespace TestProject
 
         [TestMethod]
 		public void TestCreationOfBasicSimpleMoney()
-		{
-			//Default currency
-			SimpleMoney money2 = new SimpleMoney(3000m);
-			Assert.AreEqual("ZAR", money2.CurrencyCode);
-			Assert.AreEqual("R", money2.CurrencySymbol);
-			Assert.AreEqual("South African Rand", money2.CurrencyName);
-			Assert.AreEqual(2, money2.DecimalDigits);
+        {
+            var currentSymbol = CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
+            var currentRegion = new RegionInfo(CultureInfo.CurrentCulture.LCID);
+            var currentCode = currentRegion.ISOCurrencySymbol;
+            var currentEnglishName = currentRegion.CurrencyEnglishName;
+            var currentDigits = CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits;
+
+
+            //Default currency
+            SimpleMoney money2 = new SimpleMoney(3000m);
+			Assert.AreEqual(currentCode, money2.CurrencyCode);
+			Assert.AreEqual(currentSymbol, money2.CurrencySymbol);
+			Assert.AreEqual(currentEnglishName, money2.CurrencyName);
+			Assert.AreEqual(currentDigits, money2.DecimalDigits);
 
 			//Implicit casting of int, decimal and double to SimpleMoney
 			SimpleMoney money3 = new SimpleMoney(5.0d);
