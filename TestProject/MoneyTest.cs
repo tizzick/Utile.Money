@@ -32,16 +32,22 @@ namespace TestProject
         [TestMethod]
 		public void TestCreationOfBasicMoney()
 		{
-			//Locale specific formatting
-			Money money1 = new Money(2000.1234567m, CurrencyCodes.USD);
+            var currentSymbol = CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
+            var currentRegion = new RegionInfo(CultureInfo.CurrentCulture.LCID);
+            var currentCode = currentRegion.ISOCurrencySymbol;
+            var currentEnglishName = currentRegion.CurrencyEnglishName;
+            var currentDigits = CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits;
+
+            //Locale specific formatting
+            Money money1 = new Money(2000.1234567m, CurrencyCodes.USD);
 			Assert.AreEqual("$2,000.12", money1.ToString());
 
 			//Default currency
 			Money money2 = new Money(3000m);
-			Assert.AreEqual("ZAR", money2.CurrencyCode);
-			Assert.AreEqual("R", money2.CurrencySymbol);
-			Assert.AreEqual("South African Rand", money2.CurrencyName);
-			Assert.AreEqual(2, money2.DecimalDigits);
+			Assert.AreEqual(currentCode, money2.CurrencyCode);
+			Assert.AreEqual(currentSymbol, money2.CurrencySymbol);
+			Assert.AreEqual(currentEnglishName, money2.CurrencyName);
+			Assert.AreEqual(currentDigits, money2.DecimalDigits);
 
 			//Implicit casting of int, decimal and double to Money
 			Money money3 = new Money(5.0d);
@@ -55,44 +61,44 @@ namespace TestProject
 			Assert.IsTrue(money3 == money4 && money4 == money5 && money5 == money6 && money6 == money7 && money7 == money8 && money8 == money9 && money9 == money10);
 
 			//Generic 3char currency code formatting instead of locale based with symbols
-			Assert.AreEqual("USD 2 000,12", money1.ToString(true));
-			Assert.AreEqual("ZAR 3 000,00", money2.ToString(true));
+			Assert.AreEqual("USD2,000", money1.ToString(true));
 
 		}
 
-		[TestMethod]
-		public void TestSignificantDecimalDigits()
-		{
-			Money money1 = new Money(13000123.3349m, CurrencyCodes.USD);
-			Assert.AreEqual("$13,000,123.33", money1.ToString());
-			// Can also use CurrencyCode string (catch code not found exception)
-			Money money2 = new Money(13000123.335m, "USD");
-			Assert.AreEqual("$13,000,123.34", money2.ToString());
-
-			// Test Amount rounding
-			Money money3 = 1.001m;
-			Assert.AreEqual(0.40m, (money3 * 0.404).Amount);
-			Assert.AreEqual(0.41m, (money3 * 0.40501).Amount);
-			Assert.AreEqual(0.41m, (money3 * 0.404999999999999).Amount);
-			money3 = 1.0;
-			Assert.AreEqual(0.40m, (money3 * 0.404999999999999).Amount);
-
-			//Different significant digits
-			Money money4 = new Money(2.499m, CurrencyCodes.USD);
-			Assert.AreEqual("$2.50", money4.ToString());
-
-			Money money5 = new Money(2.499m, CurrencyCodes.JPY);
-			Assert.AreEqual("¥2", money5.ToString());
-
-			//Very large numbers
-			//Double is used internally, only 16 digits of accuracy can be guaranteed
-			Money money6 = 123456789012.34; //14 digits
-			money6 *= 1.14; //will add another 2 digits of detail
-			money6 /= 1.14;
-			Assert.AreEqual(money6.Amount, 123456789012.34m);
-		}
 
 		[TestMethod]
+        public void TestSignificantDecimalDigits()
+        {
+            Money money1 = new Money(13000123.3349m, CurrencyCodes.USD);
+            Assert.AreEqual("$13,000,123.33", money1.ToString());
+            // Can also use CurrencyCode string (catch code not found exception)
+            Money money2 = new Money(13000123.335m, "USD");
+            Assert.AreEqual("$13,000,123.34", money2.ToString());
+
+            // Test Amount rounding
+            Money money3 = 1.001m;
+            Assert.AreEqual(0.40m, (money3 * 0.404).Amount);
+            Assert.AreEqual(0.41m, (money3 * 0.40501).Amount);
+            Assert.AreEqual(0.41m, (money3 * 0.404999999999999).Amount);
+            money3 = 1.0;
+            Assert.AreEqual(0.40m, (money3 * 0.404999999999999).Amount);
+
+            //Different significant digits
+            Money money4 = new Money(2.499m, CurrencyCodes.USD);
+            Assert.AreEqual("$2.50", money4.ToString());
+
+            Money money5 = new Money(2.499m, CurrencyCodes.JPY);
+            Assert.AreEqual("¥2", money5.ToString());
+
+            //Very large numbers
+            //Double is used internally, only 16 digits of accuracy can be guaranteed
+            Money money6 = 123456789012.34; //14 digits
+            money6 *= 1.14; //will add another 2 digits of detail
+            money6 /= 1.14;
+            Assert.AreEqual(money6.Amount, 123456789012.34m);
+        }
+
+        [TestMethod]
 		public void TestOperators()
 		{
 			Money money1 = new Money(20, CurrencyCodes.EUR);
@@ -106,7 +112,7 @@ namespace TestProject
 			Assert.AreEqual("3,33 €", (money1 * (1.0 / 6.0)).ToString());
 
 			// Operators use internal value
-			Money money2 = new Money(0.01m);
+			Money money2 = new Money(0.01m, CurrencyCodes.ZAR);
 			Assert.AreEqual("R 0,01", (money2 / 2).ToString());
 
 			Money money3 = new Money(3, CurrencyCodes.EUR);
