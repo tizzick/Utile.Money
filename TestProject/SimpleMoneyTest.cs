@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Useful.Money;
 using System;
+using System.Globalization;
 
 namespace TestProject
 {
@@ -9,18 +10,22 @@ namespace TestProject
 	{
 
 		[TestMethod]
-		public void Comparision()
-		{
-			// SimpleMoney objects should be equal if their significant digits are the same
-			SimpleMoney money1 = new SimpleMoney(5.130000000000001m);
-			SimpleMoney money2 = new SimpleMoney(5.13m);
-			SimpleMoney money3 = new SimpleMoney(5.12m);
-			Assert.IsTrue(money1 == money2);
-			Assert.IsTrue(money1.InternalAmount != money2.InternalAmount);
-			Assert.IsTrue(money1 != money3);
-		}
+        public void Comparision()
+        {
+            //get the current culture number of significant digits
+            //todo after upgrading to .net 4.5 or higher use CultureInfo.DefaultThreadCurrentCulture to set the current thread culture instead of using significantDigits
+            var significantDigits = CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits;
+            // SimpleMoney objects should be equal if their significant digits are the same
+            SimpleMoney money1 = new SimpleMoney(5.130000000000001m);
+            SimpleMoney money2 = new SimpleMoney(5.13m);
+            SimpleMoney money3 = new SimpleMoney(5.12m);
+            Assert.IsTrue(significantDigits < 15 ? money1 == money2 : money1 != money2);
+            Assert.IsTrue(money1.InternalAmount != money2.InternalAmount);
+            Assert.IsTrue(significantDigits > 1 ? money1 != money3 : money1 == money3);
 
-		[TestMethod]
+        }
+
+        [TestMethod]
 		public void TestCreationOfBasicSimpleMoney()
 		{
 			//Default currency

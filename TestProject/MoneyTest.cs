@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Globalization;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Useful.Money;
 
 namespace TestProject
@@ -8,21 +9,27 @@ namespace TestProject
 	{
 
 		[TestMethod]
-		public void Comparision()
-		{
-			// Money objects should be equal if their significant digits are the same
-			Money money1 = new Money(5.130000000000001m);
-			Money money2 = new Money(5.13m);
-			Money money3 = new Money(5.12m);
-			Assert.IsTrue(money1 == money2);
-			Assert.IsTrue(money1.InternalAmount != money2.InternalAmount);
-			Assert.IsTrue(money1 != money3);
-			// Different Currencies aren't equal
-			Money money4 = new Money(5.12m, CurrencyCodes.USD);
-			Assert.IsTrue(money3 != money4);
-		}
+        public void Comparision()
+        {
+            //get the current culture number of significant digits
+            //todo after upgrading to .net 4.5 or higher use CultureInfo.DefaultThreadCurrentCulture to set the current thread culture instead of using significantDigits
+            var significantDigits = CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits;
+            // Money objects should be equal if their significant digits are the same
+            Money money1 = new Money(5.130000000000001m);
+            Money money2 = new Money(5.13m);
+            Money money3 = new Money(5.12m);
+            Assert.IsTrue(significantDigits < 15 ? money1 == money2 : money1 != money2);
+            Assert.IsTrue(money1.InternalAmount != money2.InternalAmount);
+            Assert.IsTrue(significantDigits > 1 ? money1 != money3 : money1 == money3);
+            // Different Currencies aren't equal
+            var differentCurrencyCode = CurrencyCodes.USD;
+            if (CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol == "$")
+                differentCurrencyCode = CurrencyCodes.EUR;
+            Money money4 = new Money(5.12m, differentCurrencyCode);
+            Assert.IsTrue(money3 != money4);
+        }
 
-		[TestMethod]
+        [TestMethod]
 		public void TestCreationOfBasicMoney()
 		{
 			//Locale specific formatting
