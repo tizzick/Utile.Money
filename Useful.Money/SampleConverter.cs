@@ -14,9 +14,7 @@ namespace Useful.Money
 
 		public double GetRate(string fromCode, string toCode, DateTime asOn)
 		{
-			if (toCode.Equals(new RegionInfo(CultureInfo.CurrentCulture.LCID).ISOCurrencySymbol))
-				return 7.9;
-			return 0.125;
+            return 7.9;
 		}
 	}
 }

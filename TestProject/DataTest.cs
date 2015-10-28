@@ -17,6 +17,10 @@ namespace TestProject
 
 	public class TestContext : DbContext
 	{
+	    public TestContext() : base("TestContext")
+	    {
+	        
+	    }
 		public DbSet<Transaction> Transactions { get; set; }
 	}
 
