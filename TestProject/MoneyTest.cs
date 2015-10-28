@@ -72,15 +72,15 @@ namespace TestProject
             Money money1 = new Money(13000123.3349m, CurrencyCodes.USD);
             Assert.AreEqual("$13,000,123.33", money1.ToString());
             // Can also use CurrencyCode string (catch code not found exception)
-            Money money2 = new Money(13000123.335m, "USD");
+            Money money2 = new Money(13000123.335m, CurrencyCodes.USD);
             Assert.AreEqual("$13,000,123.34", money2.ToString());
 
             // Test Amount rounding
-            Money money3 = 1.001m;
+            Money money3 = new Money(1.001m, CurrencyCodes.ZAR) ;
             Assert.AreEqual(0.40m, (money3 * 0.404).Amount);
             Assert.AreEqual(0.41m, (money3 * 0.40501).Amount);
             Assert.AreEqual(0.41m, (money3 * 0.404999999999999).Amount);
-            money3 = 1.0;
+            money3 = new Money(1.0, CurrencyCodes.ZAR);
             Assert.AreEqual(0.40m, (money3 * 0.404999999999999).Amount);
 
             //Different significant digits
@@ -92,7 +92,7 @@ namespace TestProject
 
             //Very large numbers
             //Double is used internally, only 16 digits of accuracy can be guaranteed
-            Money money6 = 123456789012.34; //14 digits
+            Money money6 = new Money(123456789012.34, CurrencyCodes.ZAR); //14 digits
             money6 *= 1.14; //will add another 2 digits of detail
             money6 /= 1.14;
             Assert.AreEqual(money6.Amount, 123456789012.34m);
