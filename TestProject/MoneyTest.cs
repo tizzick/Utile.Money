@@ -138,9 +138,9 @@ namespace TestProject
 		[TestMethod]
 		public void TestAllocation()
 		{
-			Money money1 = new Money(10);
+			Money money1 = new Money(10, CurrencyCodes.ZAR);
 			Money[] allocatedMoney1 = money1.Allocate(3);
-			Money total1 = new Money();
+			Money total1 = new Money(CurrencyCodes.ZAR);
 			for (int i = 0; i < allocatedMoney1.Length; i++)
 				total1 += allocatedMoney1[i];
 			Assert.AreEqual("R 10,00", total1.ToString());
