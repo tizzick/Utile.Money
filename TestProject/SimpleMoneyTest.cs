@@ -103,27 +103,40 @@ namespace TestProject
 		public void TestOperators()
 		{
 			SimpleMoney money1 = new SimpleMoney(20);
-			Assert.AreEqual("R 6,67", (money1 / 3).ToString());
-			Assert.AreEqual("R 6,67", (money1 / 3m).ToString());
-			Assert.AreEqual("R 6,67", (money1 / 3.0).ToString());
-			Assert.AreEqual("R 0,00", (money1 * (1 / 3)).ToString());
-			Assert.AreEqual("R 6,67", (money1 * (1m / 3m)).ToString());
-			Assert.AreEqual("R 6,67", (money1 * (1d / 3d)).ToString());
-			Assert.AreEqual("R 3,33", (money1 / 6).ToString());
-			Assert.AreEqual("R 3,33", (money1 * (1.0 / 6.0)).ToString());
+		    SimpleMoney ans1 = 6.666667m;
+            SimpleMoney ans2 = 6.666667m;
+            SimpleMoney ans3 = 6.666667m;
+            SimpleMoney ans4 = 0m;
+            SimpleMoney ans5 = 6.666667m;
+            SimpleMoney ans6 = 6.666667m;
+            SimpleMoney ans7 = 3.333333m;
+            SimpleMoney ans8 = 3.333333m;
+            Assert.AreEqual(ans1.Amount, (money1 / 3).Amount);
+			Assert.AreEqual(ans2.Amount, (money1 / 3m).Amount);
+			Assert.AreEqual(ans3.Amount, (money1 / 3.0).Amount);
+			Assert.AreEqual(ans4.Amount, (money1 * (1 / 3)).Amount);
+			Assert.AreEqual(ans5.Amount, (money1 * (1m / 3m)).Amount);
+			Assert.AreEqual(ans6.Amount, (money1 * (1d / 3d)).Amount);
+			Assert.AreEqual(ans7.Amount, (money1 / 6).Amount);
+			Assert.AreEqual(ans8.Amount, (money1 * (1.0 / 6.0)).Amount);
 
 			// Operators use internal value
 			SimpleMoney money2 = new SimpleMoney(0.01m);
-			Assert.AreEqual("R 0,01", (money2 / 2).ToString());
+		    SimpleMoney ans9 = 0.005m;
+			Assert.AreEqual(ans9.Amount, (money2 / 2).Amount);
 
 			SimpleMoney money3 = new SimpleMoney(3);
 			SimpleMoney money4 = new SimpleMoney(1d / 3d);
 			SimpleMoney money5 = new SimpleMoney(6);
 			SimpleMoney money6 = new SimpleMoney(1d / 6d);
-			Assert.AreEqual("R 6,67", (money1 / money3).ToString());
-			Assert.AreEqual("R 6,67", (money1 * money4).ToString());
-			Assert.AreEqual("R 3,33", (money1 / money5).ToString());
-			Assert.AreEqual("R 3,33", (money1 * money6).ToString());
+            SimpleMoney ans10 = 6.666667m;
+            SimpleMoney ans11 = 6.666667m;
+            SimpleMoney ans12 = 3.333333m;
+            SimpleMoney ans13 = 3.333333m;
+            Assert.AreEqual(ans10.Amount, (money1 / money3).Amount);
+			Assert.AreEqual(ans11.Amount, (money1 * money4).Amount);
+			Assert.AreEqual(ans12.Amount, (money1 / money5).Amount);
+			Assert.AreEqual(ans13.Amount, (money1 * money6).Amount);
 			Assert.IsTrue((money3 + money5).Amount == 9);
 			Assert.IsTrue((money5 - money3).Amount == 3);
 			//Using implicit casting
