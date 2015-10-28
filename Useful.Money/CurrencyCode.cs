@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace Useful.Money
 {
@@ -21,58 +22,47 @@ namespace Useful.Money
 			CurrencyCode = currencyCode;
 			Code = Enum.GetName(typeof(CurrencyCodes), CurrencyCode);
 			var cultureInfo = CultureInfoFromCurrencyISO(Code);
-			NumberFormat = cultureInfo.NumberFormat;
+            if(cultureInfo == null)
+                throw new Exception("Currency code " + Code + " is not supported by the current .Net Framework version.");
+            NumberFormat = cultureInfo.NumberFormat;
 			var region = new RegionInfo(cultureInfo.LCID);
 			Symbol = region.CurrencySymbol;
 			EnglishName = region.CurrencyEnglishName;
 		}
 
-		public static Currency Get(CurrencyCodes currencyCode)
-		{
-			if (CurrencyDictionary.ContainsKey(currencyCode))
-				return CurrencyDictionary[currencyCode];
-			else
-				return null;
-		}
+        private Currency(CurrencyCodes currencyCode, CultureInfo cultureInfo)
+        {
+            CurrencyCode = currencyCode;
+            Code = Enum.GetName(typeof(CurrencyCodes), CurrencyCode);
+            NumberFormat = cultureInfo.NumberFormat;
+            var region = new RegionInfo(cultureInfo.LCID);
+            Symbol = region.CurrencySymbol;
+            EnglishName = region.CurrencyEnglishName;
+        }
 
-		public static bool Exists(CurrencyCodes currencyCode)
+        public static Currency Get(CurrencyCodes currencyCode)
+        {
+            return Exists(currencyCode) ? _currencyDictionary[currencyCode] : null;
+        }
+
+	    public static bool Exists(CurrencyCodes currencyCode)
 		{
-			return CurrencyDictionary.ContainsKey(currencyCode);
+		    if (_currencyDictionary.ContainsKey(currencyCode))
+		        return true;
+		    var cultureInfo = CultureInfoFromCurrencyISO(Enum.GetName(typeof (CurrencyCodes), currencyCode));
+            if(cultureInfo == null)
+                return false;
+            _currencyDictionary.Add(currencyCode, new Currency(currencyCode, cultureInfo));
+            return true;
 		}
 
 		private static CultureInfo CultureInfoFromCurrencyISO(string isoCode)
 		{
-			//CultureInfo cultureInfo = (from culture in CultureInfo.GetCultures(CultureTypes.SpecificCultures)
-			//  let region = new RegionInfo(culture.LCID)
-			//  where String.Equals(region.ISOCurrencySymbol, isoCode, StringComparison.InvariantCultureIgnoreCase)
-			//  select culture).First();
-			//return cultureInfo;
-			foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.SpecificCultures))
-			{
-				RegionInfo ri = new RegionInfo(ci.LCID);
-				if (ri.ISOCurrencySymbol == isoCode)
-					return ci;
-			}
-			throw new Exception("Currency code " + isoCode + " is not supported by the current .Net Framework.");
+		    return (from ci in CultureInfo.GetCultures(CultureTypes.SpecificCultures) let ri = new RegionInfo(ci.LCID) where ri.ISOCurrencySymbol == isoCode select ci).FirstOrDefault();
 		}
 
-		private static Dictionary<CurrencyCodes, Currency> _currencyDictionary;
-		private static Dictionary<CurrencyCodes, Currency> CurrencyDictionary
-		{
-			get
-			{
-				if (_currencyDictionary == null)
-					_currencyDictionary = CreateCurrencyDictionary();
-				return _currencyDictionary;
-			}
-		}
-		private static Dictionary<CurrencyCodes, Currency> CreateCurrencyDictionary()
-		{
-			var result = new Dictionary<CurrencyCodes, Currency>();
-			foreach (CurrencyCodes code in Enum.GetValues(typeof(CurrencyCodes)))
-				result.Add(code, new Currency(code));
-			return result;
-		}
+	    private static Dictionary<CurrencyCodes, Currency> _currencyDictionary = new Dictionary<CurrencyCodes, Currency>();
+
 	}
 
 	/// <summary>
@@ -107,7 +97,7 @@ namespace Useful.Money
 		DKK = 208,
 		DOP = 214,
 		DZD = 12,
-		//    EEK = 233,
+		    EEK = 233,
 		EGP = 818,
 		ETB = 230,
 		EUR = 978,
@@ -136,8 +126,8 @@ namespace Useful.Money
 		LAK = 418,
 		LBP = 422,
 		LKR = 144,
-		//    LTL = 440,
-		//    LVL = 428,
+		    LTL = 440,
+		    LVL = 428,
 		LYD = 434,
 		MAD = 504,
 		MKD = 807,
@@ -181,6 +171,6 @@ namespace Useful.Money
 		XOF = 952,
 		YER = 886,
 		ZAR = 710,
-		//    ZWL = 932
+		    ZWL = 932
 	}
 }
