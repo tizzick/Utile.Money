@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Useful.Money
+namespace Fruitful.Money
 {
 	public class SampleConverter : ICurrencyConverter
 	{

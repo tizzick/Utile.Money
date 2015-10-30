@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace Useful.Money
+namespace Fruitful.Money
 {
 	public class Currency
 	{

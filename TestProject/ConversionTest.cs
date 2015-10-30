@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Useful.Money;
+using Fruitful.Money;
 
 namespace TestProject
 {

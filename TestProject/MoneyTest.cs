@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Useful.Money;
+using Fruitful.Money;
 
 namespace TestProject
 {
@@ -96,6 +96,15 @@ namespace TestProject
             money6 *= 1.14; //will add another 2 digits of detail
             money6 /= 1.14;
             Assert.AreEqual(money6.Amount, 123456789012.34m);
+
+            Money money7 = new Money(23.99999999m,CurrencyCodes.JPY);
+            Assert.AreEqual(23m, money7.TruncatedAmount);
+            Money money8 = new Money(23.99999999m, CurrencyCodes.AUD);
+            Assert.AreEqual(23.99m, money8.TruncatedAmount);
+            Money money9 = new Money(23.99999999m, CurrencyCodes.BHD);
+            Assert.AreEqual(23.999m, money9.TruncatedAmount);
+
+
         }
 
         [TestMethod]

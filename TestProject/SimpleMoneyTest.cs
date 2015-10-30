@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Useful.Money;
+using Fruitful.Money;
 using System;
 using System.Globalization;
 
@@ -97,9 +97,12 @@ namespace TestProject
             money6 *= 1.14; //will add another 2 digits of detail
 			money6 /= 1.14;
 			Assert.AreEqual(money6.Amount, money7.Amount);
-		}
 
-		[TestMethod]
+            Money money8 = new Money(23.99999999m);
+            Assert.AreEqual(money8.TruncatedAmount , currentDigits == 0? 23m : currentDigits == 1? 23.9m: currentDigits==2? 23.99m : currentDigits==3? 23.999m: 23.9999m);
+        }
+
+        [TestMethod]
 		public void TestOperators()
 		{
 			SimpleMoney money1 = new SimpleMoney(20);

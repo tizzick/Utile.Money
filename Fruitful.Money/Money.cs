@@ -30,9 +30,11 @@
 
 using System;
 using System.Globalization;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Useful.Money
+namespace Fruitful.Money
 {
+    [ComplexType]
 	public class Money : IComparable<Money>, IEquatable<Money>, IComparable
 	{
 		private CurrencyCodes currencyCode;
@@ -103,7 +105,8 @@ namespace Useful.Money
 		{
 			get
 			{
-				return (decimal)((long)Math.Truncate(amount * this.DecimalDigits)) / this.DecimalDigits;
+			    var multiplier = Math.Pow(10, DecimalDigits);
+			    return (decimal) (Math.Truncate(amount*multiplier)/multiplier);
 			}
 		}
 

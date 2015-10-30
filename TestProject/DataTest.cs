@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data.Entity;
-using Useful.Money;
+using Fruitful.Money;
 
 namespace TestProject
 {

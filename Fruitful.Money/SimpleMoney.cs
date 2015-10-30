@@ -14,7 +14,7 @@
 using System;
 using System.Globalization;
 
-namespace Useful.Money
+namespace Fruitful.Money
 {
 	public class SimpleMoney : IComparable<SimpleMoney>, IEquatable<SimpleMoney>, IComparable
 	{
@@ -58,20 +58,21 @@ namespace Useful.Money
 			}
 		}
 
-		/// <summary>
-		/// Truncates the amount to the number of significant decimal digits
-		/// of the associated currency.
-		/// </summary>
-		/// <returns>A decimal with the amount truncated to the significant number of decimal digits.</returns>
-		public decimal TruncatedAmount
-		{
-			get
-			{
-				return (decimal)((long)Math.Truncate(amount * this.DecimalDigits)) / this.DecimalDigits;
-			}
-		}
+        /// <summary>
+        /// Truncates the amount to the number of significant decimal digits
+        /// of the associated currency.
+        /// </summary>
+        /// <returns>A decimal with the amount truncated to the significant number of decimal digits.</returns>
+        public decimal TruncatedAmount
+        {
+            get
+            {
+                var multiplier = Math.Pow(10, DecimalDigits);
+                return (decimal)(Math.Truncate(amount * multiplier) / multiplier);
+            }
+        }
 
-		public string CurrencyCode
+        public string CurrencyCode
 		{
 			get { return Currency.Get(currencyCode).Code; }
 		}
