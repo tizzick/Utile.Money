@@ -1,6 +1,8 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Fruitful.Money;
+using Utile.Money;
 
 namespace TestProject
 {
@@ -15,17 +17,17 @@ namespace TestProject
             //todo after upgrading to .net 4.5 or higher use CultureInfo.DefaultThreadCurrentCulture to set the current thread culture instead of using significantDigits
             var significantDigits = CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits;
             // Money objects should be equal if their significant digits are the same
-            Money money1 = new Money(5.130000000000001m);
-            Money money2 = new Money(5.13m);
-            Money money3 = new Money(5.12m);
+            var money1 = new Money(5.130000000000001m);
+            var money2 = new Money(5.13m);
+            var money3 = new Money(5.12m);
             Assert.IsTrue(significantDigits < 15 ? money1 == money2 : money1 != money2);
-            Assert.IsTrue(money1.InternalAmount != money2.InternalAmount);
+            Assert.IsTrue(Math.Abs(money1.InternalAmount - money2.InternalAmount) > significantDigits);
             Assert.IsTrue(significantDigits > 1 ? money1 != money3 : money1 == money3);
             // Different Currencies aren't equal
             var differentCurrencyCode = CurrencyCodes.USD;
             if (CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol == "$")
                 differentCurrencyCode = CurrencyCodes.EUR;
-            Money money4 = new Money(5.12m, differentCurrencyCode);
+            var money4 = new Money(5.12m, differentCurrencyCode);
             Assert.IsTrue(money3 != money4);
         }
 
@@ -39,20 +41,20 @@ namespace TestProject
             var currentDigits = CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits;
 
             //Locale specific formatting
-            Money money1 = new Money(2000.1234567m, CurrencyCodes.USD);
+            var money1 = new Money(2000.1234567m, CurrencyCodes.USD);
 			Assert.AreEqual("$2,000.12", money1.ToString());
 
 			//Default currency
-			Money money2 = new Money(3000m);
+			var money2 = new Money(3000m);
 			Assert.AreEqual(currentCode, money2.CurrencyCode);
 			Assert.AreEqual(currentSymbol, money2.CurrencySymbol);
 			Assert.AreEqual(currentEnglishName, money2.CurrencyName);
 			Assert.AreEqual(currentDigits, money2.DecimalDigits);
 
 			//Implicit casting of int, decimal and double to Money
-			Money money3 = new Money(5.0d);
-			Money money4 = new Money(5.0m);
-			Money money5 = new Money(5);
+			var money3 = new Money(5.0d);
+			var money4 = new Money(5.0m);
+			var money5 = new Money(5);
 			Money money6 = 5.0d;
 			Money money7 = 5.0m;
 			Money money8 = 5;
@@ -69,14 +71,14 @@ namespace TestProject
 		[TestMethod]
         public void TestSignificantDecimalDigits()
         {
-            Money money1 = new Money(13000123.3349m, CurrencyCodes.USD);
+            var money1 = new Money(13000123.3349m, CurrencyCodes.USD);
             Assert.AreEqual("$13,000,123.33", money1.ToString());
             // Can also use CurrencyCode string (catch code not found exception)
-            Money money2 = new Money(13000123.335m, CurrencyCodes.USD);
+            var money2 = new Money(13000123.335m, CurrencyCodes.USD);
             Assert.AreEqual("$13,000,123.34", money2.ToString());
 
             // Test Amount rounding
-            Money money3 = new Money(1.001m, CurrencyCodes.ZAR) ;
+            var money3 = new Money(1.001m, CurrencyCodes.ZAR) ;
             Assert.AreEqual(0.40m, (money3 * 0.404).Amount);
             Assert.AreEqual(0.41m, (money3 * 0.40501).Amount);
             Assert.AreEqual(0.41m, (money3 * 0.404999999999999).Amount);
@@ -84,24 +86,24 @@ namespace TestProject
             Assert.AreEqual(0.40m, (money3 * 0.404999999999999).Amount);
 
             //Different significant digits
-            Money money4 = new Money(2.499m, CurrencyCodes.USD);
+            var money4 = new Money(2.499m, CurrencyCodes.USD);
             Assert.AreEqual("$2.50", money4.ToString());
 
-            Money money5 = new Money(2.499m, CurrencyCodes.JPY);
+            var money5 = new Money(2.499m, CurrencyCodes.JPY);
             Assert.AreEqual("¥2", money5.ToString());
 
             //Very large numbers
             //Double is used internally, only 16 digits of accuracy can be guaranteed
-            Money money6 = new Money(123456789012.34, CurrencyCodes.ZAR); //14 digits
+            var money6 = new Money(123456789012.34, CurrencyCodes.ZAR); //14 digits
             money6 *= 1.14; //will add another 2 digits of detail
             money6 /= 1.14;
             Assert.AreEqual(money6.Amount, 123456789012.34m);
 
-            Money money7 = new Money(23.99999999m,CurrencyCodes.JPY);
+            var money7 = new Money(23.99999999m,CurrencyCodes.JPY);
             Assert.AreEqual(23m, money7.TruncatedAmount);
-            Money money8 = new Money(23.99999999m, CurrencyCodes.AUD);
+            var money8 = new Money(23.99999999m, CurrencyCodes.AUD);
             Assert.AreEqual(23.99m, money8.TruncatedAmount);
-            Money money9 = new Money(23.99999999m, CurrencyCodes.BHD);
+            var money9 = new Money(23.99999999m, CurrencyCodes.BHD);
             Assert.AreEqual(23.999m, money9.TruncatedAmount);
 
 
@@ -110,7 +112,7 @@ namespace TestProject
         [TestMethod]
 		public void TestOperators()
 		{
-			Money money1 = new Money(20, CurrencyCodes.EUR);
+			var money1 = new Money(20, CurrencyCodes.EUR);
 			Assert.AreEqual("6,67 €", (money1 / 3).ToString());
 			Assert.AreEqual("6,67 €", (money1 / 3m).ToString());
 			Assert.AreEqual("6,67 €", (money1 / 3.0).ToString());
@@ -121,13 +123,13 @@ namespace TestProject
 			Assert.AreEqual("3,33 €", (money1 * (1.0 / 6.0)).ToString());
 
 			// Operators use internal value
-			Money money2 = new Money(0.01m, CurrencyCodes.ZAR);
-			Assert.AreEqual("R 0,01", (money2 / 2).ToString());
+			var money2 = new Money(0.01m, CurrencyCodes.ZAR);
+			Assert.AreEqual("R0,01", (money2 / 2).ToString());
 
-			Money money3 = new Money(3, CurrencyCodes.EUR);
-			Money money4 = new Money(1d / 3d, CurrencyCodes.EUR);
-			Money money5 = new Money(6, CurrencyCodes.EUR);
-			Money money6 = new Money(1d / 6d, CurrencyCodes.EUR);
+			var money3 = new Money(3, CurrencyCodes.EUR);
+			var money4 = new Money(1d / 3d, CurrencyCodes.EUR);
+			var money5 = new Money(6, CurrencyCodes.EUR);
+			var money6 = new Money(1d / 6d, CurrencyCodes.EUR);
 			Assert.AreEqual("6,67 €", (money1 / money3).ToString());
 			Assert.AreEqual("6,67 €", (money1 * money4).ToString());
 			Assert.AreEqual("3,33 €", (money1 / money5).ToString());
@@ -147,22 +149,21 @@ namespace TestProject
 		[TestMethod]
 		public void TestAllocation()
 		{
-			Money money1 = new Money(10, CurrencyCodes.ZAR);
-			Money[] allocatedMoney1 = money1.Allocate(3);
-			Money total1 = new Money(CurrencyCodes.ZAR);
-			for (int i = 0; i < allocatedMoney1.Length; i++)
-				total1 += allocatedMoney1[i];
-			Assert.AreEqual("R 10,00", total1.ToString());
-			Assert.AreEqual("R 3,34", allocatedMoney1[0].ToString());
-			Assert.AreEqual("R 3,33", allocatedMoney1[1].ToString());
-			Assert.AreEqual("R 3,33", allocatedMoney1[2].ToString());
+			var money1 = new Money(10, CurrencyCodes.ZAR);
+			var allocatedMoney1 = money1.Allocate(3);
+			var total1 = new Money(CurrencyCodes.ZAR);
 
-			Money money2 = new Money(0.09m, CurrencyCodes.USD);
-			Money[] allocatedMoney2 = money2.Allocate(5);
-			Money total2 = new Money(CurrencyCodes.USD);
-			for (int i = 0; i < allocatedMoney2.Length; i++)
-				total2 += allocatedMoney2[i];
-			Assert.AreEqual("$0.09", total2.ToString());
+		    total1 = allocatedMoney1.Aggregate(total1, (current, t) => current + t);
+		    Assert.AreEqual("R10,00", total1.ToString());
+			Assert.AreEqual("R3,34", allocatedMoney1[0].ToString());
+			Assert.AreEqual("R3,33", allocatedMoney1[1].ToString());
+			Assert.AreEqual("R3,33", allocatedMoney1[2].ToString());
+
+			var money2 = new Money(0.09m, CurrencyCodes.USD);
+			var allocatedMoney2 = money2.Allocate(5);
+			var total2 = new Money(CurrencyCodes.USD);
+		    total2 = allocatedMoney2.Aggregate(total2, (current, t) => current + t);
+		    Assert.AreEqual("$0.09", total2.ToString());
 		}
 
 	}
