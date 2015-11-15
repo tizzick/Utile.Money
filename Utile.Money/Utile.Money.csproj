@@ -68,7 +68,6 @@
     <Compile Include="ICurrencyConverter.cs" />
     <Compile Include="Money.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SampleConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

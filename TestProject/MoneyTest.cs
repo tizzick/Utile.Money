@@ -14,21 +14,18 @@ namespace TestProject
         public void Comparision()
         {
             //get the current culture number of significant digits
-            //todo after upgrading to .net 4.5 or higher use CultureInfo.DefaultThreadCurrentCulture to set the current thread culture instead of using significantDigits
-            var significantDigits = CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits;
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("ja-JP");
             // Money objects should be equal if their significant digits are the same
             var money1 = new Money(5.130000000000001m);
             var money2 = new Money(5.13m);
             var money3 = new Money(5.12m);
-            Assert.IsTrue(significantDigits < 15 ? money1 == money2 : money1 != money2);
-            Assert.IsTrue(Math.Abs(money1.InternalAmount - money2.InternalAmount) > significantDigits);
-            Assert.IsTrue(significantDigits > 1 ? money1 != money3 : money1 == money3);
+            Assert.IsTrue( money1 == money2 );
+            Assert.IsTrue(money1 == money3);
             // Different Currencies aren't equal
-            var differentCurrencyCode = CurrencyCodes.USD;
-            if (CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol == "$")
-                differentCurrencyCode = CurrencyCodes.EUR;
-            var money4 = new Money(5.12m, differentCurrencyCode);
+            var money4 = new Money(5.12m, CurrencyCodes.USD);
             Assert.IsTrue(money3 != money4);
+            
+
         }
 
         [TestMethod]

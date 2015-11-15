@@ -1,8 +1,9 @@
 ﻿using System;
+using Utile.Money;
 
-namespace Utile.Money
+namespace TestProject
 {
-	public class SampleConverter : ICurrencyConverter
+	public class ConverterMock : ICurrencyConverter
 	{
 
 		public double GetRate(CurrencyCodes fromCode, CurrencyCodes toCode, DateTime asOn)

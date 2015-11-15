@@ -154,8 +154,8 @@ namespace Utile.Money
 
 		public static bool operator !=(Money first, Money second)
 		{
-			return first != null && !first.Equals(second);
-		}
+            return !first.Equals(second);
+        }
 
 		public static bool operator >(Money first, Money second)
 		{
@@ -194,9 +194,7 @@ namespace Utile.Money
 		{
 			if (this < other)
 				return -1;
-			if (this > other)
-				return 1;
-			return 0;
+			return this > other ? 1 : 0;
 		}
 
 		public static Money operator +(Money first, Money second)

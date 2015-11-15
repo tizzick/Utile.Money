@@ -29,7 +29,7 @@ namespace TestProject
 		{
 			var money1 = new Money(12.34, CurrencyCodes.USD);
 			var money2 = new Money(12.34, CurrencyCodes.ZAR);
-			Money.Converter = new SampleConverter();
+			Money.Converter = new ConverterMock();
 
 			var money3 = money1.Convert(CurrencyCodes.ZAR);
 
@@ -39,47 +39,47 @@ namespace TestProject
 			Assert.IsTrue(money1 != money3);
 			Assert.AreNotEqual(money3, money1);
 
-			// comparing apples to oranges possible with Converter!
-			// Will only return a match if the Converter has the same rate for from -> to and (inverted) to -> from
-			Money.AllowImplicitConversion = true;
-			var m1To3 = Money.Converter.GetRate(money1.CurrencyCode, money3.CurrencyCode, DateTime.Now);
-			var m3To1 = Money.Converter.GetRate(money3.CurrencyCode, money1.CurrencyCode, DateTime.Now);
-			if (Math.Abs(m1To3 - 1d / m3To1) < Tolerance)
-			{
-				Assert.IsTrue(money3 == money1);
-				Assert.IsTrue(money1 == money3);
-				Assert.AreEqual(money3, money1);
-			}
-			else
-			{
-				Assert.IsFalse(money3 == money1);
-				Assert.IsFalse(money1 == money3);
-				Assert.AreNotEqual(money3, money1);
-			}
-		}
+            // comparing apples to oranges possible with Converter!
+            // Will only return a match if the Converter has the same rate for from -> to and (inverted) to -> from
+            Money.AllowImplicitConversion = true;
+            var m1To3 = Money.Converter.GetRate(money1.CurrencyCode, money3.CurrencyCode, DateTime.Now);
+            var m3To1 = Money.Converter.GetRate(money3.CurrencyCode, money1.CurrencyCode, DateTime.Now);
+            if (m1To3 == 1d / m3To1)
+            {
+                Assert.IsTrue(money3 == money1);
+                Assert.IsTrue(money1 == money3);
+                Assert.AreEqual(money3, money1);
+            }
+            else
+            {
+                Assert.IsFalse(money3 == money1);
+                Assert.IsFalse(money1 == money3);
+                Assert.AreNotEqual(money3, money1);
+            }
+        }
 
 		[TestMethod]
 		public void TestOperations()
 		{
 			var money1 = new Money(12.34, CurrencyCodes.USD);
 			var money2 = new Money(12.34, CurrencyCodes.ZAR);
-			Money.Converter = new SampleConverter();
+			Money.Converter = new ConverterMock();
 			Money.AllowImplicitConversion = true;
 
 			// adding oranges to apples gives you apples
 			var money3 = money1 + money2;
 			Assert.AreEqual("USD", money3.CurrencyCode);
 
-			// left side is ZAR and right side is USD, money3 gets converted back to ZAR
-			// the same converter should return the same inverted rates
-			var m1To3 = Money.Converter.GetRate(money1.CurrencyCode, money3.CurrencyCode, DateTime.Now);
-			var m3To1 = Money.Converter.GetRate(money3.CurrencyCode, money1.CurrencyCode, DateTime.Now);
-			if (Math.Abs(m1To3 - 1d / m3To1) < Tolerance)
-				Assert.AreEqual(money2, money3 - money1);
-			else
-				Assert.AreNotEqual(money2, money3 - money1);
-			// Mix up ZAR and USD. moneys converted only one way
-			Assert.AreEqual(money1, money3 - money2);
+            // left side is ZAR and right side is USD, money3 gets converted back to ZAR
+            // the same converter should return the same inverted rates
+            var m1To3 = Money.Converter.GetRate(money1.CurrencyCode, money3.CurrencyCode, DateTime.Now);
+            var m3To1 = Money.Converter.GetRate(money3.CurrencyCode, money1.CurrencyCode, DateTime.Now);
+            if (m1To3 == 1d / m3To1)
+                Assert.AreEqual(money2, money3 - money1);
+            else
+                Assert.AreNotEqual(money2, money3 - money1);
+            // Mix up ZAR and USD. moneys converted only one way
+            Assert.AreEqual(money1, money3 - money2);
 
 			// Should fail if allowImplicitconversion is false (default)
 			Money.AllowImplicitConversion = false;
