@@ -7,13 +7,15 @@ namespace TestProject
 	[TestClass]
 	public class ConversionTest
 	{
-		[TestMethod]
+	    public double Tolerance { get; } = 15;
+
+        [TestMethod]
 		public void TestConversion()
 		{
 			var money1 = new Money(12.34, CurrencyCodes.USD);
 			var money2 = new Money(12.34, CurrencyCodes.ZAR);
 
-			Money money3 = money1.Convert(CurrencyCodes.ZAR, 7.8);
+			var money3 = money1.Convert(CurrencyCodes.ZAR, 7.8);
 
 			Assert.AreEqual(money3.CurrencyCode, money2.CurrencyCode);
 			Assert.AreNotEqual(money3, money2);
@@ -29,7 +31,7 @@ namespace TestProject
 			var money2 = new Money(12.34, CurrencyCodes.ZAR);
 			Money.Converter = new SampleConverter();
 
-			Money money3 = money1.Convert(CurrencyCodes.ZAR);
+			var money3 = money1.Convert(CurrencyCodes.ZAR);
 
 			Assert.AreEqual(money3.CurrencyCode, money2.CurrencyCode);
 			Assert.AreNotEqual(money3, money2);
@@ -40,9 +42,9 @@ namespace TestProject
 			// comparing apples to oranges possible with Converter!
 			// Will only return a match if the Converter has the same rate for from -> to and (inverted) to -> from
 			Money.AllowImplicitConversion = true;
-			double m1to3 = Money.Converter.GetRate(money1.CurrencyCode, money3.CurrencyCode, DateTime.Now);
-			double m3to1 = Money.Converter.GetRate(money3.CurrencyCode, money1.CurrencyCode, DateTime.Now);
-			if (m1to3 == 1d / m3to1)
+			var m1To3 = Money.Converter.GetRate(money1.CurrencyCode, money3.CurrencyCode, DateTime.Now);
+			var m3To1 = Money.Converter.GetRate(money3.CurrencyCode, money1.CurrencyCode, DateTime.Now);
+			if (Math.Abs(m1To3 - 1d / m3To1) < Tolerance)
 			{
 				Assert.IsTrue(money3 == money1);
 				Assert.IsTrue(money1 == money3);
@@ -70,9 +72,9 @@ namespace TestProject
 
 			// left side is ZAR and right side is USD, money3 gets converted back to ZAR
 			// the same converter should return the same inverted rates
-			double m1to3 = Money.Converter.GetRate(money1.CurrencyCode, money3.CurrencyCode, DateTime.Now);
-			double m3to1 = Money.Converter.GetRate(money3.CurrencyCode, money1.CurrencyCode, DateTime.Now);
-			if (m1to3 == 1d / m3to1)
+			var m1To3 = Money.Converter.GetRate(money1.CurrencyCode, money3.CurrencyCode, DateTime.Now);
+			var m3To1 = Money.Converter.GetRate(money3.CurrencyCode, money1.CurrencyCode, DateTime.Now);
+			if (Math.Abs(m1To3 - 1d / m3To1) < Tolerance)
 				Assert.AreEqual(money2, money3 - money1);
 			else
 				Assert.AreNotEqual(money2, money3 - money1);
@@ -84,7 +86,7 @@ namespace TestProject
 			try
 			{
 				money3 = money1 + money2;
-				Assert.Fail("Money type exception was not thrown");
+				Assert.Fail("Money type exception was not thrown:" + money3.Amount);
 			}
 			catch (InvalidOperationException e)
 			{

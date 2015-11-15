@@ -29,7 +29,7 @@ namespace TestProject
 		protected override void Seed(TestContext ctx)
 		{
 			//add a transaction
-			Transaction trx = new Transaction
+			var trx = new Transaction
 			{
 				Money = new Money(123456789012.3456m, CurrencyCodes.USD),
 				Detail = "First Transaction"
@@ -46,15 +46,15 @@ namespace TestProject
 		[TestInitialize]
 		public void Init()
 		{
-			Database.SetInitializer<TestContext>(new TestsInitializer());
+			Database.SetInitializer(new TestsInitializer());
 		}
 
 		[TestMethod]
 		public void TestAddDelete()
 		{
 			// Arrange
-			TestContext ctx = new TestContext();
-			Transaction trx = new Transaction
+			var ctx = new TestContext();
+			var trx = new Transaction
 			{
 				Money = 1.23d,
 				Detail = "Another Transaction"
@@ -63,7 +63,7 @@ namespace TestProject
 			// Act
 			ctx.SaveChanges();
 			// Assert
-			int count = ctx.Transactions.Count();
+			var count = ctx.Transactions.Count();
 			var savedTrx = ctx.Transactions.OrderByDescending(t => t.TransactionId).First();
 			Assert.AreEqual(2, count);
 			Assert.AreEqual(savedTrx.Money, trx.Money);
@@ -79,7 +79,7 @@ namespace TestProject
 		[TestMethod]
 		public void TestView()
 		{
-			TestContext ctx = new TestContext();
+			var ctx = new TestContext();
 			var trx = ctx.Transactions.First();
 
 			Assert.AreEqual(trx.Detail, "First Transaction");

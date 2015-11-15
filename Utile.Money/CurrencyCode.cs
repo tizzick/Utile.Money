@@ -7,8 +7,8 @@ namespace Utile.Money
 {
 	public class Currency
 	{
-		public CurrencyCodes CurrencyCode { get; private set; }
-		public string Code { get; private set; }
+		public CurrencyCodes CurrencyCode { get; }
+		public string Code { get; }
 		public NumberFormatInfo NumberFormat { get; private set; }
 		public string Symbol { get; private set; }
 		public string EnglishName { get; private set; }
@@ -42,17 +42,17 @@ namespace Utile.Money
 
         public static Currency Get(CurrencyCodes currencyCode)
         {
-            return Exists(currencyCode) ? _currencyDictionary[currencyCode] : null;
+            return Exists(currencyCode) ? CurrencyDictionary[currencyCode] : null;
         }
 
 	    public static bool Exists(CurrencyCodes currencyCode)
 		{
-		    if (_currencyDictionary.ContainsKey(currencyCode))
+		    if (CurrencyDictionary.ContainsKey(currencyCode))
 		        return true;
 		    var cultureInfo = CultureInfoFromCurrencyISO(Enum.GetName(typeof (CurrencyCodes), currencyCode));
             if(cultureInfo == null)
                 return false;
-            _currencyDictionary.Add(currencyCode, new Currency(currencyCode, cultureInfo));
+            CurrencyDictionary.Add(currencyCode, new Currency(currencyCode, cultureInfo));
             return true;
 		}
 
@@ -61,7 +61,7 @@ namespace Utile.Money
 		    return (from ci in CultureInfo.GetCultures(CultureTypes.SpecificCultures) let ri = new RegionInfo(ci.LCID) where ri.ISOCurrencySymbol == isoCode select ci).FirstOrDefault();
 		}
 
-	    private static Dictionary<CurrencyCodes, Currency> _currencyDictionary = new Dictionary<CurrencyCodes, Currency>();
+	    private static readonly Dictionary<CurrencyCodes, Currency> CurrencyDictionary = new Dictionary<CurrencyCodes, Currency>();
 
 	}
 
@@ -97,7 +97,7 @@ namespace Utile.Money
 		DKK = 208,
 		DOP = 214,
 		DZD = 12,
-		    EEK = 233,
+		EEK = 233,
 		EGP = 818,
 		ETB = 230,
 		EUR = 978,
@@ -126,8 +126,8 @@ namespace Utile.Money
 		LAK = 418,
 		LBP = 422,
 		LKR = 144,
-		    LTL = 440,
-		    LVL = 428,
+		LTL = 440,
+		LVL = 428,
 		LYD = 434,
 		MAD = 504,
 		MKD = 807,
@@ -171,6 +171,6 @@ namespace Utile.Money
 		XOF = 952,
 		YER = 886,
 		ZAR = 710,
-		    ZWL = 932
+		ZWL = 932
 	}
 }
