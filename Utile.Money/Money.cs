@@ -31,6 +31,14 @@
 using System;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
+using System.Data.Common;
+using System.Data.Metadata.Edm;
+using System.Data.Objects;
+using System.Diagnostics;
+using System.Xml.Serialization;
+using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace Utile.Money
 {
@@ -58,25 +66,25 @@ namespace Utile.Money
 			InternalAmount = amount;
 		}
 
-		#endregion
+        #endregion
 
-		#region Public Properties
+        #region Public Properties
 
-		/// <summary>
-		/// Represents the ISO code for the currency
-		/// </summary>
-		/// <returns>An Int16 with the ISO code for the current currency</returns>
-		public short ISOCode
+        /// <summary>
+        /// Represents the ISO code for the currency
+        /// </summary>
+        /// <returns>An Int16 with the ISO code for the current currency</returns>
+        public short ISOCode
 		{
 			get { return (short)_currencyCode; }
 			set { _currencyCode = (CurrencyCodes)value; }
 		}
 
-		/// <summary>
-		/// Accesses the internal representation of the value of the Money
-		/// </summary>
-		/// <returns>A decimal with the internal _amount stored for this Money.</returns>
-		public double InternalAmount { get; set; }
+        /// <summary>
+        /// Accesses the internal representation of the value of the Money
+        /// </summary>
+        /// <returns>A decimal with the internal _amount stored for this Money.</returns>
+        public double InternalAmount { get; set; }
 
         /// <summary>
 		/// Rounds the _amount to the number of significant decimal digits
@@ -397,5 +405,23 @@ namespace Utile.Money
 		}
 
         #endregion
-	}
+
+        public static explicit operator Money(DbDataRecord record)
+        {
+            //dont check EdmType because want to maintain backward compatibility with Useful.Money
+            if (record.FieldCount < 2)
+                throw new InvalidCastException("complex type has wrong number of fields, Not a Money type");
+            
+            try
+            {//should try to convert any complex type with small int and double fields as first two fields.
+                var isoCode = record.GetInt16(0);
+                var amount = record.GetDouble(1);
+                return new Money(amount, (CurrencyCodes)isoCode);
+            }
+            catch (InvalidCastException)
+            {
+                throw new InvalidCastException("Coplex types first two properties were of the wrong type.");
+            }
+        }
+    }
 }
