@@ -343,8 +343,13 @@ namespace Utile.Money
 		{
 			return new Money(_currencyCode);
 		}
+        
+        public override string ToString()
+        {
+            return ToString("C",false);
+        }
 
-		public string ToString(bool genericFormatter)
+        public string ToString(bool genericFormatter)
 		{
 			return ToString("C", genericFormatter);
 		}
@@ -409,18 +414,23 @@ namespace Utile.Money
         public static explicit operator Money(DbDataRecord record)
         {
             //dont check EdmType because want to maintain backward compatibility with Useful.Money
-            if (record.FieldCount < 2)
+            if (record.FieldCount != 2)
                 throw new InvalidCastException("complex type has wrong number of fields, Not a Money type");
             
             try
             {//should try to convert any complex type with small int and double fields as first two fields.
-                var isoCode = record.GetInt16(0);
+                var isoCodeShort = record.GetInt16(0);
+                if(!Enum.IsDefined(typeof(CurrencyCodes),(int)isoCodeShort))
+                    throw new InvalidCastException("ISO code is unreconized.");
+                var isoCode = (CurrencyCodes) isoCodeShort;
+
                 var amount = record.GetDouble(1);
-                return new Money(amount, (CurrencyCodes)isoCode);
+                
+                return new Money(amount, isoCode);
             }
             catch (InvalidCastException)
-            {
-                throw new InvalidCastException("Coplex types first two properties were of the wrong type.");
+            {//fields are wrong type or wrong order, not a money type
+                throw new InvalidCastException("Complex types first two properties were of the wrong type.");
             }
         }
     }
