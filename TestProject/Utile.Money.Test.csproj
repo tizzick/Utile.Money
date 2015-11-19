@@ -108,12 +108,6 @@
     <Compile Include="ConverterMock.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Utile.Money\Utile.Money.csproj">
-      <Project>{AB413157-8485-446B-8A5B-1E57290E4B0D}</Project>
-      <Name>Utile.Money</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -121,6 +115,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TestModels\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Utile.Money.Extended\Utile.Money.Extended.csproj">
+      <Project>{604e3ce7-65c0-4c3b-ac28-6c01e4d9db69}</Project>
+      <Name>Utile.Money.Extended</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utile.Money\Utile.Money.csproj">
+      <Project>{ab413157-8485-446b-8a5b-1e57290e4b0d}</Project>
+      <Name>Utile.Money</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

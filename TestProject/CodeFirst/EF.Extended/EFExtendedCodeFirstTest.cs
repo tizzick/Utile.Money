@@ -11,14 +11,17 @@ using EntityFramework.Audit;
 using EntityFramework.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Utile.Money;
+using Utile.Money.Extended;
 
-namespace TestProject.CodeFirst.EFExtendedEntities
+namespace TestProject.CodeFirst.EF.Extended
 {
     public class Transaction
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
+        [AuditPropertyFormat(typeof(MoneyFormat), "FormatMoney")]
         public Money Money { get; set; }
         public string Detail { get; set; }
     }
@@ -198,17 +201,19 @@ namespace TestProject.CodeFirst.EFExtendedEntities
         }
         
         [TestMethod]
-        public void EFExtendedCodeFirst_Cast_Money_Property_current_value()
+        public void EFExtendedCodeFirst_assert_MoneyFormat_cast_worked_correctly()
         {
             // Arrange
             var ctx = new EFExtendedEntities();
-            var trx = new Transaction // model
+            var trx = new Transaction
             {
-                Money = new Money(1.23d),//ComplexType
+                Money = 1.23d,
                 Detail = "Another Transaction To be edited"
             };
             ctx.Transactions.Add(trx);
             ctx.SaveChanges();
+
+            //Act
             var audit = ctx.BeginAudit();
             trx.Money = 10d;
             var t = ctx.Set<Transaction>().FirstOrDefault(x => x.Id == trx.Id);
@@ -218,13 +223,37 @@ namespace TestProject.CodeFirst.EFExtendedEntities
             var log = audit.LastLog;
             var entity = log.Entities[0];
 
+            // Assert
+            Assert.IsTrue(entity.Properties[2].Current is Money, "Current money property value is the correct type");
+            Assert.IsTrue(entity.Properties[2].Original is Money, "origional money property value is the correct type");
+        }
+
+
+        [TestMethod]
+        public void EFExtendedCodeFirst_Edit_origional_different_from_current()
+        {
+            // Arrange
+            var ctx = new EFExtendedEntities();
+            var trx = new Transaction
+            {
+                Money = 1.23d,
+                Detail = "Another Transaction To be edited"
+            };
+            ctx.Transactions.Add(trx);
+            ctx.SaveChanges();
 
             //Act
-            var current = (Money)(DbDataRecord)entity.Properties[2].Current;
-            // Assert
-            Assert.AreEqual(current.InternalAmount, trx.Money.InternalAmount, "money internal amounts are equal");
-            Assert.AreEqual(current.ISOCode, trx.Money.ISOCode, "money isocode are equal");
+            var audit = ctx.BeginAudit();
+            trx.Money = 10d;
+            var t = ctx.Set<Transaction>().FirstOrDefault(x => x.Id == trx.Id);
+            ctx.Entry(t).CurrentValues.SetValues(trx);
+            ctx.Entry(t).State = EntityState.Modified;
+            ctx.SaveChanges();
+            var log = audit.LastLog;
+            var entity = log.Entities[0];
 
+            // Assert
+            Assert.AreNotEqual(entity.Properties[2].Current, entity.Properties[2].Original);
         }
 
     }
