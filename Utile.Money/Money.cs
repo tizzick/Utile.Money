@@ -162,6 +162,9 @@ namespace Utile.Money
 
 		public static bool operator !=(Money first, Money second)
 		{
+            //handle self null
+		    if (ReferenceEquals(first, null))
+		        return false;
             return !first.Equals(second);
         }
 
