@@ -80,7 +80,7 @@ namespace TestProject.CodeFirst.EF.Extended
             ctx.SaveChanges();
             // Assert
             var count = ctx.Transactions.Count();
-            var savedTrx = ctx.Transactions.OrderByDescending(t => t.Id).First();
+            var savedTrx = ctx.Transactions.First(x => x.Id == trx.Id);
             Assert.AreEqual(2, count);
             Assert.AreEqual(savedTrx.Money, trx.Money);
             Assert.AreEqual(savedTrx.Detail, trx.Detail);
@@ -124,29 +124,32 @@ namespace TestProject.CodeFirst.EF.Extended
             Assert.AreEqual(trx.Money.CurrencyCode, "USD");
         }
 
-        [TestMethod]
-        public void EFExtendedCodeFirst_toXml()
-        {
-            // Arrange
-            var ctx = new EFExtendedEntities();
-            var trx = new Transaction
-            {
-                Money = 1.23d,
-                Detail = "Another Transaction"
-            };
-            var priorCount = ctx.Transactions.Count();
-            var audit = ctx.BeginAudit();
-            ctx.Transactions.Add(trx);
-            ctx.SaveChanges();
-            var log = audit.LastLog;
-            //Act
-            var xml = log.ToXml();
+        //[TestMethod]
+        //public void EFExtendedCodeFirst_toXml()
+        //{
+        //    // Arrange
+        //    var ctx = new EFExtendedEntities();
+        //    var trx = new Transaction
+        //    {
+        //        Money = 1.23d,
+        //        Detail = "Another Transaction"
+        //    };
+        //    var priorCount = ctx.Transactions.Count();
+        //    var auditConfig = AuditConfiguration.Default;
+        //    auditConfig.IsAuditable<Money>()
+        //        .FormatWith( p => p.)
+        //    var audit = ctx.BeginAudit();
+        //    ctx.Transactions.Add(trx);
+        //    ctx.SaveChanges();
+        //    var log = audit.LastLog;
+        //    //Act
+        //    var xml = log.ToXml();
 
-            // Assert
-            var count = ctx.Transactions.Count();
-            Assert.AreEqual(priorCount + 1, count, "assert object cound increased by one");
-            Assert.IsFalse(string.IsNullOrEmpty(xml),"xml is not empty or null");
-        }
+        //    // Assert
+        //    var count = ctx.Transactions.Count();
+        //    Assert.AreEqual(priorCount + 1, count, "assert object cound increased by one");
+        //    Assert.IsFalse(string.IsNullOrEmpty(xml),"xml is not empty or null");
+        //}
 
         [TestMethod]
         public void EFExtendedCodeFirst_Edit()

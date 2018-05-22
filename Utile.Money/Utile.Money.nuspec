@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Utile.Money</id>
+    <version>1.0.1.1</version>
+    <title>Utile.Money is a port of Useful.Money to support .NET 4.5.1 and above</title>
+    <authors>Padhraic</authors>
+    <owners>Padhraic</owners>
+    <licenseUrl>https://github.com/Padhraic/Utile.Money/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/Padhraic/Utile.Money</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Utile.Money is a composite money type. It implements many operators that alow the class to be treated like a type.</description>
+    <copyright>Copyright 2018</copyright>
+    <tags>EntityFramework</tags>
+    <dependencies>
+      <group targetFramework="net451">
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\Utile.Money.dll" target="lib\net451" />
+  </files>
+</package>
